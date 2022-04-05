@@ -1895,11 +1895,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Shag\\AndroidCourse\\1.myAppAPI\\MyApp\\MyApp\\MyApp.csproj",
+      "projectUniqueName": "E:\\Shag\\AndroidCourse\\myAppAPI\\MyApp\\MyApp\\MyApp.csproj",
       "projectName": "MyApp",
-      "projectPath": "E:\\Shag\\AndroidCourse\\1.myAppAPI\\MyApp\\MyApp\\MyApp.csproj",
+      "projectPath": "E:\\Shag\\AndroidCourse\\myAppAPI\\MyApp\\MyApp\\MyApp.csproj",
       "packagesPath": "C:\\Users\\Mayevsky\\.nuget\\packages\\",
-      "outputPath": "E:\\Shag\\AndroidCourse\\1.myAppAPI\\MyApp\\MyApp\\obj\\",
+      "outputPath": "E:\\Shag\\AndroidCourse\\myAppAPI\\MyApp\\MyApp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Mayevsky\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "DCYWpGjo44d+fG7DIeFT8uyUCTmTqBYw5QZMnBpV7n8po987tc4Ehi7Ql1mtikrbv0eWhftUZrM5sUSVWtL8kQ==",
+  "dgSpecHash": "yyB9RlZxqXlomop/3k4B2132YTo69t9HZgf4i62zQQJQ5tyZGv8EMxj7w5GjSMdrgGWSjeI3DozCk4Q4YKoH8w==",
   "success": true,
-  "projectFilePath": "E:\\Shag\\AndroidCourse\\1.myAppAPI\\MyApp\\MyApp\\MyApp.csproj",
+  "projectFilePath": "E:\\Shag\\AndroidCourse\\myAppAPI\\MyApp\\MyApp\\MyApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Mayevsky\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",
     "C:\\Users\\Mayevsky\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\11.0.0\\automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
