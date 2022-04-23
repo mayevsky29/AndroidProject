@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MyApp.Data;
 using MyApp.Data.Entities.Identity;
 using MyApp.Helpers;
 using MyApp.Models;
@@ -17,12 +18,14 @@ namespace MyApp.Controllers
         private readonly IMapper _mapper;
         private readonly IJwtTokenService _jwtTokenService;
         private readonly UserManager<AppUser> _userManager;
+        private readonly AppEFContext _context;
         public AccountController(UserManager<AppUser> userManager, IMapper mapper,
-            IJwtTokenService jwtTokenService)
+            IJwtTokenService jwtTokenService, AppEFContext context)
         {
             _userManager = userManager;
             _mapper = mapper;
             _jwtTokenService = jwtTokenService;
+            _context = context; 
         }
 
         [HttpPost]
@@ -41,6 +44,47 @@ namespace MyApp.Controllers
                 return BadRequest(new {errors = result.Errors});
 
             return Ok(new { token = _jwtTokenService.CreateToken(user) });
+        }
+
+        [HttpGet]
+        [Route("users")]
+        public async Task<IActionResult> Users()
+        {
+            // Затримка на отримання фото 2 сек
+            Thread.Sleep(2000);
+            var list = _context.Users.Select(x => _mapper.Map<UserItemViewModel>(x)).ToList();
+
+            return Ok(list);
+        }
+
+        /// <summary>
+        /// Вхід на сайт
+        /// </summary>
+        /// <param name="model">Модель із даними</param>
+        /// <returns>Повертає токен авторизації</returns>
+        [HttpPost]
+        [Route("login")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResponceViewModel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Login([FromBody] LoginViewModel model)
+        {
+            try
+            {
+                // пошук юзера по пошті
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    if( await _userManager.CheckPasswordAsync(user, model.Password))
+                    {
+                        return Ok(new TokenResponceViewModel{ token = _jwtTokenService.CreateToken(user) });
+                    }
+                }
+                return BadRequest(new { error = "Користувача не знайдено" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = "Помилка на сервері "});
+            }
         }
     }
 }

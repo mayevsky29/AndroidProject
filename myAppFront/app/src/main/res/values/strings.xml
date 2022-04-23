@@ -5,4 +5,6 @@
     <string name="email">Електронна пошта</string>
     <string name="fristName">Ім\'я</string>
     <string name="selectImage">Обрати фото</string>
+    <string name="hello">Привіт</string>
+    <string name="users">Користувачі</string>
 </resources>
