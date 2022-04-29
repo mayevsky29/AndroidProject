@@ -3,6 +3,7 @@ package com.example.myappfrontend.network.account;
 
 
 import com.example.myappfrontend.network.account.dto.AccountResponseDTO;
+import com.example.myappfrontend.network.account.dto.LoginDTO;
 import com.example.myappfrontend.network.account.dto.RegisterDTO;
 import com.example.myappfrontend.network.account.usercard.UserDTO;
 
@@ -20,4 +21,7 @@ public interface AccountApi {
 
     @GET("/api/account/users")
     public Call<List<UserDTO>> users();
+
+    @POST("/api/account/login")
+    public Call<AccountResponseDTO> login(@Body LoginDTO model);
 }

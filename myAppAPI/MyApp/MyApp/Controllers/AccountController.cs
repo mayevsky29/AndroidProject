@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyApp.Data;
 using MyApp.Data.Entities.Identity;
 using MyApp.Helpers;
@@ -52,7 +53,8 @@ namespace MyApp.Controllers
         {
             // Затримка на отримання фото 2 сек
             Thread.Sleep(2000);
-            var list = _context.Users.Select(x => _mapper.Map<UserItemViewModel>(x)).ToList();
+            var list = await _context.Users.Select(x => _mapper.Map<UserItemViewModel>(x))
+                .AsQueryable().ToListAsync();
 
             return Ok(list);
         }

@@ -22,6 +22,7 @@ public class HomeApplication extends Application
     public void setAppContext(Context appContext) {
         this.appContext=appContext;
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -68,5 +69,12 @@ public class HomeApplication extends Application
         {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean isAuth() {
+        if(getToken().equals(""))
+            return false;
+        return true;
     }
 }

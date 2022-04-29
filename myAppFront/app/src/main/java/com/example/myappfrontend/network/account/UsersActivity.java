@@ -7,9 +7,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myappfrontend.BaseActivity;
 import com.example.myappfrontend.R;
 import com.example.myappfrontend.network.account.usercard.UserDTO;
 import com.example.myappfrontend.network.account.usercard.UsersAdapter;
+import com.example.myappfrontend.utils.CommonUtils;
+
 
 import java.util.List;
 
@@ -17,7 +20,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UsersActivity extends AppCompatActivity {
+public class UsersActivity extends BaseActivity {
 
     private UsersAdapter adapter;
     private RecyclerView rcvUsers;
@@ -31,6 +34,7 @@ public class UsersActivity extends AppCompatActivity {
         rcvUsers.setLayoutManager(new GridLayoutManager(this, 2,
                 LinearLayoutManager.VERTICAL, false));
 
+        CommonUtils.showLoading(this);
         AccountService.getInstance()
                 .jsonApi()
                 .users()
@@ -42,11 +46,12 @@ public class UsersActivity extends AppCompatActivity {
                             adapter=new UsersAdapter(response.body());
                             rcvUsers.setAdapter(adapter);
                         }
+                        CommonUtils.hideLoading();
                     }
 
                     @Override
                     public void onFailure(Call<List<UserDTO>> call, Throwable t) {
-
+                        CommonUtils.hideLoading();
                     }
                 });
 

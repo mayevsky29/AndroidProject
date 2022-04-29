@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myappfrontend.BaseActivity;
 import com.example.myappfrontend.R;
 import com.example.myappfrontend.application.HomeApplication;
 import com.example.myappfrontend.network.account.dto.AccountResponseDTO;
@@ -29,7 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseActivity {
 
     private TextView tvInfo;
     private TextInputLayout textFieldEmail;
