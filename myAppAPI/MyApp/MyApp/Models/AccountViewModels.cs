@@ -26,12 +26,12 @@
         /// <summary>
         /// The email of the user
         /// </summary>
-        /// <example>petro@gmail.com</example>
+        /// <example>admin@gmail.com</example>
         public string Email { get; set; }
         /// <summary>
         /// The password of the user
         /// </summary>
-        /// <example>987654321</example>
+        /// <example>123456</example>
         public string Password { get; set; }    
     }
 

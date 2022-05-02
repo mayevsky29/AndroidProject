@@ -13,6 +13,9 @@ using FluentValidation.AspNetCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Microsoft.AspNetCore.HttpOverrides;
+using MyApp.Helpers;
+using MyApp.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,6 +101,13 @@ builder.Services.AddCors();
 
 var app = builder.Build();
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+app.UseLoggerFile();
+
 app.UseCors(options =>
                 options.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader());
 
@@ -126,5 +136,9 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCustomExceptionHandler();
+
+app.SeedData();
 
 app.Run();

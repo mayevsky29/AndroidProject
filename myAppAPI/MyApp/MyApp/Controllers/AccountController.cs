@@ -20,13 +20,15 @@ namespace MyApp.Controllers
         private readonly IJwtTokenService _jwtTokenService;
         private readonly UserManager<AppUser> _userManager;
         private readonly AppEFContext _context;
+        private readonly ILogger<AccountController> _logger;
         public AccountController(UserManager<AppUser> userManager, IMapper mapper,
-            IJwtTokenService jwtTokenService, AppEFContext context)
+            IJwtTokenService jwtTokenService, AppEFContext context, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _mapper = mapper;
             _jwtTokenService = jwtTokenService;
-            _context = context; 
+            _context = context;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -41,8 +43,8 @@ namespace MyApp.Controllers
             user.Photo = randomFilename;
             var result = await _userManager.CreateAsync(user, model.Password);
 
-            if(!result.Succeeded)
-                return BadRequest(new {errors = result.Errors});
+            if (!result.Succeeded)
+                return BadRequest(new { errors = result.Errors });
 
             return Ok(new { token = _jwtTokenService.CreateToken(user) });
         }
@@ -70,23 +72,18 @@ namespace MyApp.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
-            try
+            _logger.LogInformation("Login user");
+            // пошук юзера по пошті
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user != null)
             {
-                // пошук юзера по пошті
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null)
+                //throw new AppException("Bad login user");
+                if (await _userManager.CheckPasswordAsync(user, model.Password))
                 {
-                    if( await _userManager.CheckPasswordAsync(user, model.Password))
-                    {
-                        return Ok(new TokenResponceViewModel{ token = _jwtTokenService.CreateToken(user) });
-                    }
+                    return Ok(new TokenResponceViewModel { token = _jwtTokenService.CreateToken(user) });
                 }
-                return BadRequest(new { error = "Користувача не знайдено" });
             }
-            catch (Exception ex)
-            {
-                return BadRequest(new { error = "Помилка на сервері "});
-            }
+            return BadRequest(new { error = "Користувача не знайдено" });
         }
     }
 }
