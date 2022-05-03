@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,8 +22,9 @@ namespace MyApp.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly AppEFContext _context;
         private readonly ILogger<AccountController> _logger;
-        public AccountController(UserManager<AppUser> userManager, IMapper mapper,
-            IJwtTokenService jwtTokenService, AppEFContext context, ILogger<AccountController> logger)
+        public AccountController(UserManager<AppUser> userManager,
+            IJwtTokenService jwtTokenService, IMapper mapper,
+            AppEFContext context, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _mapper = mapper;
@@ -46,14 +48,15 @@ namespace MyApp.Controllers
             if (!result.Succeeded)
                 return BadRequest(new { errors = result.Errors });
 
+
             return Ok(new { token = _jwtTokenService.CreateToken(user) });
         }
 
         [HttpGet]
+        [Authorize]
         [Route("users")]
         public async Task<IActionResult> Users()
         {
-            // Затримка на отримання фото 2 сек
             Thread.Sleep(2000);
             var list = await _context.Users.Select(x => _mapper.Map<UserItemViewModel>(x))
                 .AsQueryable().ToListAsync();
@@ -64,8 +67,12 @@ namespace MyApp.Controllers
         /// <summary>
         /// Вхід на сайт
         /// </summary>
-        /// <param name="model">Модель із даними</param>
+        /// <param name="model">Подель із даними</param>
         /// <returns>Повертає токен авторизації</returns>
+        /// <remarks>Awesomeness!</remarks>
+        /// <response code="200">Login user</response>
+        /// <response code="400">Login has missing/invalid values</response>
+        /// <response code="500">Oops! Can't create your login right now</response>
         [HttpPost]
         [Route("login")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResponceViewModel))]
@@ -73,7 +80,6 @@ namespace MyApp.Controllers
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
             _logger.LogInformation("Login user");
-            // пошук юзера по пошті
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
             {

@@ -1,6 +1,7 @@
 package com.example.myappfrontend.network.account;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -9,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myappfrontend.BaseActivity;
 import com.example.myappfrontend.R;
+import com.example.myappfrontend.network.account.dto.ServerErrorDTO;
 import com.example.myappfrontend.network.account.usercard.UserDTO;
 import com.example.myappfrontend.network.account.usercard.UsersAdapter;
 import com.example.myappfrontend.utils.CommonUtils;
+import com.google.gson.Gson;
 
 
 import java.util.List;
@@ -45,6 +48,18 @@ public class UsersActivity extends BaseActivity {
                         {
                             adapter=new UsersAdapter(response.body());
                             rcvUsers.setAdapter(adapter);
+                        }
+                        if(response.code()>=500)
+                        {
+                            try {
+                                String json = response.errorBody().string();
+                                Gson gson = new Gson();
+                                ServerErrorDTO serverError = gson.fromJson(json, ServerErrorDTO.class);
+                                String message = serverError.getError();
+                                Toast.makeText(UsersActivity.this, message, Toast.LENGTH_SHORT).show();
+                            }
+                            catch(Exception ex) {}
+
                         }
                         CommonUtils.hideLoading();
                     }

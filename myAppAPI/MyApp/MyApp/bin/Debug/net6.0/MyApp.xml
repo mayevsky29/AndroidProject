@@ -8,8 +8,12 @@
             <summary>
             Вхід на сайт
             </summary>
-            <param name="model">Модель із даними</param>
+            <param name="model">Подель із даними</param>
             <returns>Повертає токен авторизації</returns>
+            <remarks>Awesomeness!</remarks>
+            <response code="200">Login user</response>
+            <response code="400">Login has missing/invalid values</response>
+            <response code="500">Oops! Can't create your login right now</response>
         </member>
         <member name="P:MyApp.Models.LoginViewModel.Email">
             <summary>
