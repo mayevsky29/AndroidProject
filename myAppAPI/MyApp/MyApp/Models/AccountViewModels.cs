@@ -35,6 +35,32 @@
         public string Password { get; set; }    
     }
 
+    public class UserDeleteModel
+    {
+        public string Email { get; set; }
+    }
+
+    public class UserEditModel
+    {
+        public string Email { get; set; }
+        public string FirstName { get; set; }
+        public string SecondName { get; set; }
+        public string Phone { get; set; }
+        public string Photo { get; set; }
+        public string OldEmail { get; set; }
+    }
+
+
+    public class ErrorMainModel
+    {
+        public ErrorBodyModel Errors { get; set; }
+    }
+    public class ErrorBodyModel
+    {
+        public string[] Email { get; set; }
+        public string[] Password { get; set; }
+    }
+
     public class TokenResponceViewModel
     {
         /// <summary>

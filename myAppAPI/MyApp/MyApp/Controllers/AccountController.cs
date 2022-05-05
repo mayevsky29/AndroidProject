@@ -9,6 +9,7 @@ using MyApp.Data.Entities.Identity;
 using MyApp.Helpers;
 using MyApp.Models;
 using MyApp.Services;
+using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace MyApp.Controllers
@@ -91,5 +92,80 @@ namespace MyApp.Controllers
             }
             return BadRequest(new { error = "Користувача не знайдено" });
         }
+
+        // видалення користувача
+        [HttpPost]
+        [Route("delete")]
+        public async Task<IActionResult> Delete([FromBody] UserDeleteModel deleteModel)
+        {
+            return await Task.Run(async () => {
+                // пошук користувача
+                AppUser user = await _userManager.FindByEmailAsync(deleteModel.Email);
+                if (user != null)
+                {
+                    if (!string.IsNullOrEmpty(user.Photo))
+                    {
+                        string path = Path.Combine(Directory.GetCurrentDirectory(), "uploads", user.Photo);
+                        if (System.IO.File.Exists(path))
+                        {
+                            System.IO.File.Delete(path);
+                        }
+                    }
+                    
+                    await _userManager.DeleteAsync(user);
+                }
+                return Ok();
+            });
+        }
+
+        // редагування користувача
+        [HttpPost]
+        [Route("edit")]
+        public async Task<IActionResult> Update([FromBody] UserEditModel model)
+        {
+            return await Task.Run(async () => {
+                IActionResult res = Ok();
+                // перевірка чи користувач зареєстрований
+                AppUser user = await _userManager.FindByEmailAsync(model.OldEmail);
+                AppUser us = await _userManager.FindByEmailAsync(model.Email);
+                if (us == null || user.Email.Equals(us.Email))
+                {
+                    user.Email = model.Email;
+                    user.FirstName = model.FirstName;
+                    user.SecondName = model.SecondName;
+                    user.Phone = model.Phone;
+                    user.UserName = model.Email;
+
+                    // робота з фото(перевірка, формування змін, збереження)
+                    if (!string.IsNullOrEmpty(model.Photo))
+                    {
+                        if (!string.IsNullOrEmpty(user.Photo))
+                        {
+                            string oldPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads", user.Photo);
+                            System.IO.File.Delete(oldPath);
+                        }
+                        string filename = Path.GetRandomFileName() + ".jpg";
+                        string path = Path.Combine(Directory.GetCurrentDirectory(), "uploads",
+                            filename);
+                        Bitmap bmp = ImageWorker.FromBase64StringToImage(model.Photo);
+                        bmp.Save(path, ImageFormat.Jpeg);
+                        user.Photo = filename;
+                    }
+                    // оновлення даних про користувача
+                    await _userManager.UpdateAsync(user);
+                    return res;
+                }
+                else
+                {
+                    //Повернення помилки якщо емейл уже існує в БД
+                    ErrorMainModel model = new ErrorMainModel();
+                    model.Errors = new ErrorBodyModel();
+                    model.Errors.Email = new string[] { "Аккаунт вже зареєстровано!" };
+                    return BadRequest(model);
+                }
+
+            });
+        }
+
     }
 }
